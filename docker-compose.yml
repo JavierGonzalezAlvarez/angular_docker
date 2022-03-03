@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  angular-mn-nginx:
+    image: nginx:latest
+    container_name: angular-mn-nginx
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - .:/app
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - angular-mn-dev
+    networks:
+      - angular-db-mn-networks
+
+  angular-mn-dev:
+    container_name: angular-mn-dev
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - '4000:80'
+    networks:
+      - angular-db-mn-networks
+
+volumes:
+  .: null
+
+networks:
+  angular-db-mn-networks:
+    external: true
